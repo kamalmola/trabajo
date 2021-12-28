@@ -6,7 +6,7 @@
  *       datos de precios horarios de energía eléctrica.
  * Post: Asigna al parámetro «dia» el día en el que se registró el menor precio
  *       diario promedio de entre las primeras «numRegs» componentes del vector
- *       «regsDiarios» y al parámetro «precioMaximo», el valor de ese precio
+ *       «regsDiarios» y al parámetro «precioMinimo», el valor de ese precio
  *       promedio diario mínimo.
  */
 void diaMasBarato(const GastoDiario regsDiarios[], const unsigned numRegs,
