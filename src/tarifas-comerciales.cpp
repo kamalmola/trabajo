@@ -32,3 +32,11 @@ double costeDiarioTarifaPlanaTramos(const GastoDiario& gasto, const TarifaPlanaT
     return costeTotal;
 }
 
+double costeTarifaPlanaTramos(const GastoDiario regDiario[], const unsigned numRegs, const TarifaPlanaTramos tarifa){
+    double costeTotal = 0;
+    for (int i=0; i<numRegs; i++){
+        costeTotal += costeDiarioTarifaPlanaTramos(regDiario[i], tarifa);
+    }
+    return costeTotal;
+    
+}
