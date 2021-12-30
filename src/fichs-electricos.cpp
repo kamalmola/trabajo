@@ -10,6 +10,47 @@
 
 using namespace std;
 
+bool leerPrecioHorario(istream& f, Fecha& fecha, unsigned& hora, double& precio){
+    string numPrecio;
+    f.ignore(76);
+    /*Lo que hace es eliminar los 76 primeros caractéres, si, he contado cuantos había hasta el precio. 
+    Seguro que hay formas mas eficientes, pero no veo como leer saltándose todos los delimitadores sin hacer varias veces getline.
+    Buenas tardes.
+    */
+    f >> precio;
+    precio = precio/1000;
+    getline(f,numPrecio,';');
+    f >> fecha.agno;
+    getline(f,numPrecio,'-');
+    f >> fecha.mes;
+    getline(f,numPrecio,'-');
+    f >> fecha.dia;
+    f.ignore();
+    f >> hora;
+    getline(f,numPrecio);
+
+}
+
+bool leerConsumoHorario(istream& f,Fecha& fecha, unsigned& hora, double& consumo){
+    string numFecha;
+
+    getline(f,numFecha,';');
+    f >> fecha.dia;
+    getline(f,numFecha,'/');
+    f >> fecha.mes;
+    getline(f,numFecha,'/');
+    f >> fecha.agno;
+    getline(f,numFecha,'/');
+    f.ignore();
+    f >> hora;
+    getline(f,numFecha,';');
+    f.ignore();
+    f >> consumo;
+    getline(f,numFecha);
+
+
+}
+
 bool leerPrecios(const string nombreFichero, const unsigned mesInicial, const unsigned mesFinal, GastoDiario registros[]) {
 
     ifstream f(nombreFichero);
