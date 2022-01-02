@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /******************************************************************************\
  * Programación 1. Trabajo obligatorio curso 2021-22
  * Autor: Miguel Ángel Latre
@@ -8,37 +7,13 @@
  *          datos relevantes de los ficheros de precios y consumo eléctrico.
 \******************************************************************************/
 #include <fstream>
-#include "fichs-electricos.hpp"
-#include <istream>
-
-/*
- * Pre:  «f» está asociado con un fichero externo que cumple con la sintaxis de
- *       la regla <fichero-precios> establecida en el enunciado y está en
- *       disposición de leer desde el principio de una línea que cumple con la
- *       regla <precio-horario>.
- * Post: Ha extraido de «f» la línea a la que hacía referencia la precondición
- *       y ha asignado a los parámetros «fecha», «hora» y «precio»,
- *       respectivamente, los datos sobre la fecha, hora y precio horario
- *       correspondientes a la línea que se ha extraído del flujo «f».
- *       El flujo «f» continua asociado con el fichero externo y en disposición
- *       de extraer datos a partir de la siguiente línea.
- *       La función ha devuelto «true» si no se han terminado los datos del
- *       fichero en el intento de lectura y «false» en caso contrario.
- */
-=======
-
-
-#include <fstream>
-#include <istream>
 #include <iostream>
-#include <string>
-#include "fecha.hpp"
-#include "gasto-diario.hpp"
+#include <istream>
 #include "fichs-electricos.hpp"
+#include "fecha.hpp"
 
 using namespace std;
 
->>>>>>> man1
 bool leerPrecioHorario(istream& f, Fecha& fecha, unsigned& hora, double& precio){
     string numPrecio;
     f.ignore(76);
@@ -59,24 +34,7 @@ bool leerPrecioHorario(istream& f, Fecha& fecha, unsigned& hora, double& precio)
     getline(f,numPrecio);
 
 }
-<<<<<<< HEAD
-/*
- * Pre:  «f» está asociado con un fichero externo que cumple con la sintaxis de
- *       la regla <fichero-consumos> establecida en el enunciado y está en
- *       disposición de leer desde el principio de una línea que cumple con la
- *       regla <consumo-horario>.
- * Post: Ha extraido de «f» la línea a la que hacía referencia la precondición
- *       y ha asignado a los parámetros «fecha», «hora» y «consumo»,
- *       respectivamente, los datos sobre la fecha, hora y consumo horario
- *       correspondientes a la línea que se ha extraído del flujo «f». 
- *       El flujo «f» continua asociado con el fichero externo y en disposición
- *       de extraer datos a partir de la siguiente línea.
- *       La función ha devuelto «true» si no se han terminado los datos del
- *       fichero en el intento de lectura y «false» en caso contrario.
- */
-=======
 
->>>>>>> man1
 bool leerConsumoHorario(istream& f,Fecha& fecha, unsigned& hora, double& consumo){
     string numFecha;
 
@@ -97,22 +55,6 @@ bool leerConsumoHorario(istream& f,Fecha& fecha, unsigned& hora, double& consumo
 
 }
 
-<<<<<<< HEAD
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-=======
 bool leerPrecios(const string nombreFichero, const unsigned mesInicial, const unsigned mesFinal, GastoDiario registros[]) {
 
     ifstream f(nombreFichero);
@@ -195,4 +137,3 @@ bool leerConsumos(const string nombreCliente, const unsigned mesInicial, const u
     }
     return true;
 }
->>>>>>> man1
