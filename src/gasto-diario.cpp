@@ -17,7 +17,7 @@
  */
 unsigned horaMasCara(const GastoDiario& gasto){
     unsigned horaCara;
-    for(int i = 0;i<=NUM_HORAS-1;i++){
+    for(unsigned i = 0;i<=NUM_HORAS-1;i++){
         if(gasto.precios[i]<gasto.precios[i+1]){
             horaCara = i+1;
         }
@@ -33,7 +33,7 @@ unsigned horaMasCara(const GastoDiario& gasto){
 double costeMedio(const GastoDiario& gasto){
     double acumuladorPrecios = 0;
 
-    for(int i = 0;i<=NUM_HORAS;i++){
+    for(unsigned i = 0;i<=NUM_HORAS;i++){
         acumuladorPrecios += gasto.precios[i];
     }
 
@@ -46,7 +46,7 @@ double costeMedio(const GastoDiario& gasto){
  */
 double costeDiario(const GastoDiario& gasto){
     double importe;
-    for(int i = 0; i<=NUM_HORAS;i++){
+    for(unsigned i = 0; i<=NUM_HORAS;i++){
         importe += gasto.consumos[i] * gasto.precios[i];
                 
     }
@@ -62,7 +62,7 @@ double costeDiario(const GastoDiario& gasto){
 double costeDiarioMinimo(const GastoDiario& gasto){
     double precioMin;
     double consumoMin;
-    for(int i = 0;i<=NUM_HORAS-1;i++){
+    for(unsigned i = 0;i<=NUM_HORAS-1;i++){
         if(gasto.precios[i]<gasto.precios[i+1]){
             precioMin = gasto.precios[i];
         }

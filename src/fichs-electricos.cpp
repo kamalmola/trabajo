@@ -15,23 +15,24 @@
 using namespace std;
 
 bool leerPrecioHorario(istream& f, Fecha& fecha, unsigned& hora, double& precio){
-    string numPrecio;
-    f.ignore(76);
-    /*Lo que hace es eliminar los 76 primeros caractéres, si, he contado cuantos había hasta el precio. 
-    Seguro que hay formas mas eficientes, pero no veo como leer saltándose todos los delimitadores sin hacer varias veces getline.
-    Buenas tardes.
-    */
+    string ignorar;
+    getline(f, ignorar, ';'); // id 
+    getline(f, ignorar, ';'); // name
+    getline(f, ignorar, ';'); // geoid
+    getline(f, ignorar, ';'); // geoname
     f >> precio;
     precio = precio/1000;
-    getline(f,numPrecio,';');
+    getline(f,ignorar,';');
     f >> fecha.agno;
-    getline(f,numPrecio,'-');
+    getline(f,ignorar,'-');
     f >> fecha.mes;
-    getline(f,numPrecio,'-');
+    getline(f,ignorar,'-');
     f >> fecha.dia;
     f.ignore();
     f >> hora;
-    getline(f,numPrecio);
+    getline(f,ignorar); 
+
+    return true;
 
 }
 
@@ -52,6 +53,7 @@ bool leerConsumoHorario(istream& f,Fecha& fecha, unsigned& hora, double& consumo
     f >> consumo;
     getline(f,numFecha);
 
+    return true;
 
 }
 
@@ -60,7 +62,7 @@ bool leerPrecios(const string nombreFichero, const unsigned mesInicial, const un
     ifstream f(nombreFichero);
 
     if (!f.is_open()){
-        cerr << "No se pudo abrir el fichero " << nombreFichero << ":unicorn:";
+        cerr << "No se pudo abrir el fichero " << nombreFichero;
         return false;
     }
     string _;
@@ -76,27 +78,33 @@ bool leerPrecios(const string nombreFichero, const unsigned mesInicial, const un
         }
     }
 
-
-    
     registros[0].dia = fecha;
     registros[0].precios[0] = precio;
 
     int dia = 0;
 
-    while (leerPrecioHorario(f, fecha, hora, precio) && fecha.mes <= mesFinal){
-        if (hora == 1){
+    while (leerPrecioHorario(f, fecha, hora, precio) && fecha.mes <= mesFinal && fecha.mes >= mesInicial){
+        if (f.eof()){
+            f.close();
+            f.clear();
+            f.open(nombreFichero);
+            getline(f, _);
+        }
+        
+        clog << fecha.mes << " " << hora << " " << precio << "\n";
+        if (hora == 0){
             dia++;
             registros[dia].dia = fecha;
         }
 
-        registros[dia].precios[hora-1] = precio;
+        registros[dia].precios[hora] = precio;
 
     }
     return true;
 }
 bool leerConsumos(const string nombreCliente, const unsigned mesInicial, const unsigned mesFinal, GastoDiario registros[]) {
 
-    for (int i=mesInicial; i<=mesFinal; i++){
+    for (unsigned i=mesInicial; i<=mesFinal; i++){
         string fichero = "datos/" + nombreCliente + "-2021-" + (i<10 ? "0 "+to_string(i): to_string(i)) + ".csv";
         ifstream f(fichero);
         if (!f.is_open()){

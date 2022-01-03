@@ -41,11 +41,55 @@ struct Usuario {
  * Post: Ha escrito en el flujo «f» el informe sobre consumo eléctrico indicado
  *       en el enunciado de este trabajo.
  */
-void escribirInforme(ostream& f,
-                     const GastoDiario regDiarios[], const unsigned numRegs,
-                     const string nombreCliente, 
-                     const unsigned mesInicial, const unsigned mesFinal) {
+void escribirInforme(ostream& f, const GastoDiario regDiarios[], const unsigned numRegs, const string nombreCliente, 
+const unsigned mesInicial, const unsigned mesFinal) {
+    string cabecera = "INFORME DEL CLIENTE " + nombreCliente + " ENTRE LOS MESES "+ to_string(mesInicial) + 
+    " Y " + to_string(mesFinal) + " DE 2021\n-------------------------------------\n";
+    f << cabecera;
+
+
 }   
+
+bool pedirDatos(string& usuario, unsigned& mesInicial, unsigned& mesFinal, string& fichero){
+    cout << "Escriba el nombre del usuario: ";
+
+    cin >> usuario;
+
+    cout << endl;
+    cout << "Escriba el mes inicial y el final: ";
+    cin >> mesInicial >> mesFinal;
+    
+    while (mesInicial > mesFinal){
+        cout << "El mes inicial tiene que ser menor o igual que el mes final." << endl << endl;
+        cout << "Escriba el mes inicial y el final: ";
+        cin >> mesInicial >> mesFinal;
+    }
+    
+    short n_veces_error = 0;
+    while ((mesInicial > 11 || mesInicial < 1) || (mesFinal > 11 || mesFinal < 1)){
+        cout << "El mes inicial tiene que estar entre 1 y 11.\n";
+        cout << "El mes final tiene que estar entre 1 y 11.\n";
+        if (!n_veces_error){
+            cout << "El mes inicial tiene que ser menor o igual que el mes final.\n" << endl;
+            n_veces_error++;
+        }
+        cout << "Escriba el mes inicial y el final: ";
+        cin >> mesInicial >> mesFinal;
+    }
+    
+    cout << endl;
+
+    cout << "Escriba el nombre del fichero del informe\n";
+    cout << "(presione solo ENTRAR para escribirlo en la pantalla): ";
+    cin.ignore();
+    char crtr = cin.get();
+    if (crtr == '\n') {
+        return false;
+    }
+    getline(cin, fichero);
+    fichero = crtr + fichero;
+    return true;
+}
 
 
 /*
@@ -53,6 +97,35 @@ void escribirInforme(ostream& f,
  */
 int main() {
 
+    
+    string usuario;
+    unsigned mesInicial, mesFinal;
+    string fichero = "";
+    bool nuevoArchivo = pedirDatos(usuario, mesInicial, mesFinal, fichero);
+    Fecha fechaInicio = {1, mesInicial, 2021};
+    Fecha fechaFinal = {diasDelMes(mesFinal, 2021), mesFinal, 2021};
+
+    unsigned numRegs = diasTranscurridos(fechaInicio, fechaFinal);
+    GastoDiario regsDiarios[numRegs];
+    leerPrecios("datos/tarifas-2021-ene-nov.csv", mesInicial, mesFinal, regsDiarios);
+    /* for (unsigned i=0; i<10; i++){
+        for (unsigned j=0; j<24; j++){
+            cout << regsDiarios[i].consumos[j] << endl;
+        }
+    } */
+    //leerConsumos(usuario, mesInicial, mesFinal, regsDiarios);
+
+     
+    if (nuevoArchivo){
+        ofstream f(fichero);
+        if (!f.is_open()){
+            cerr << "El archivo no se pudo abrir correctamente";
+            return 1;
+        }
+        escribirInforme(f, regsDiarios, numRegs, usuario, mesInicial, mesFinal);
+    } else {
+        escribirInforme(cout, regsDiarios, numRegs, usuario, mesInicial, mesFinal);
+    }
 
 
 
