@@ -37,23 +37,20 @@ bool leerPrecioHorario(istream& f, Fecha& fecha, unsigned& hora, double& precio)
 }
 
 bool leerConsumoHorario(istream& f,Fecha& fecha, unsigned& hora, double& consumo){
-    string numFecha;
+    string ignorar;
 
-    getline(f,numFecha,';');
+    getline(f,ignorar,';');
     f >> fecha.dia;
-    getline(f,numFecha,'/');
+    f.ignore();
     f >> fecha.mes;
-    getline(f,numFecha,'/');
+    f.ignore();
     f >> fecha.agno;
-    getline(f,numFecha,'/');
-    f.ignore();
+    getline(f,ignorar,';');
     f >> hora;
-    getline(f,numFecha,';');
-    f.ignore();
+    getline(f,ignorar,';');
     f >> consumo;
-    getline(f,numFecha);
-
-    return true;
+    getline(f, ignorar, ';');
+    return !f.eof();
 
 }
 
@@ -91,7 +88,6 @@ bool leerPrecios(const string nombreFichero, const unsigned mesInicial, const un
             getline(f, _);
         }
         
-        clog << fecha.mes << " " << hora << " " << precio << "\n";
         if (hora == 0){
             dia++;
             registros[dia].dia = fecha;
@@ -105,10 +101,10 @@ bool leerPrecios(const string nombreFichero, const unsigned mesInicial, const un
 bool leerConsumos(const string nombreCliente, const unsigned mesInicial, const unsigned mesFinal, GastoDiario registros[]) {
 
     for (unsigned i=mesInicial; i<=mesFinal; i++){
-        string fichero = "datos/" + nombreCliente + "-2021-" + (i<10 ? "0 "+to_string(i): to_string(i)) + ".csv";
+        string fichero = "datos/" + nombreCliente + "-2021-" + (i<10 ? "0"+to_string(i): to_string(i)) + ".csv";
         ifstream f(fichero);
         if (!f.is_open()){
-            cerr << "No se pudo abrir el fichero " << fichero << ":unicorn:";
+            cerr << "No se pudo abrir el fichero " << fichero;
             return false;
         }
         string _;
@@ -119,27 +115,14 @@ bool leerConsumos(const string nombreCliente, const unsigned mesInicial, const u
         unsigned hora;
         double consumo;
 
-        while (leerConsumoHorario(f, fecha, hora, consumo)){
-            if(fecha.mes == mesInicial){
-                break;
-            }
-        }
-        
-        registros[0].consumos[0] = consumo;
-
         int dia = 0;
+        registros[0].consumos[0] = leerConsumoHorario(f, fecha, hora, consumo);
 
-        while (leerConsumoHorario(f, fecha, hora, consumo) && fecha.mes <= mesFinal){
-            if(fecha.dia != registros[dia].dia.dia){
-                cerr << "Fechas distintas entre mismos dias";
-                return false;
-            }
+        while (leerConsumoHorario(f, fecha, hora, consumo)){
             if (hora == 1){
                 dia++;
-                registros[dia].dia = fecha;
             }
-
-            registros[dia].precios[hora-1] = consumo;
+            registros[dia].consumos[hora-1] = consumo;
 
         }
     }

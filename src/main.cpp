@@ -108,14 +108,14 @@ int main() {
     unsigned numRegs = diasTranscurridos(fechaInicio, fechaFinal);
     GastoDiario regsDiarios[numRegs];
     leerPrecios("datos/tarifas-2021-ene-nov.csv", mesInicial, mesFinal, regsDiarios);
-    /* for (unsigned i=0; i<10; i++){
+    
+    leerConsumos(usuario, mesInicial, mesFinal, regsDiarios);
+    for (unsigned i=0; i<10; i++){
         for (unsigned j=0; j<24; j++){
+            
             cout << regsDiarios[i].consumos[j] << endl;
         }
-    } */
-    //leerConsumos(usuario, mesInicial, mesFinal, regsDiarios);
-
-     
+    }
     if (nuevoArchivo){
         ofstream f(fichero);
         if (!f.is_open()){
