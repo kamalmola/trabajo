@@ -101,14 +101,14 @@ int main() {
     string usuario;
     unsigned mesInicial, mesFinal;
     string fichero = "";
+
     bool nuevoArchivo = pedirDatos(usuario, mesInicial, mesFinal, fichero);
-    Fecha fechaInicio = {1, mesInicial, 2021};
+    Fecha fechaInicio = {0, mesInicial, 2021};
     Fecha fechaFinal = {diasDelMes(mesFinal, 2021), mesFinal, 2021};
 
     unsigned numRegs = diasTranscurridos(fechaInicio, fechaFinal);
     GastoDiario regsDiarios[numRegs];
     leerPrecios("datos/tarifas-2021-ene-nov.csv", mesInicial, mesFinal, regsDiarios);
-    
     leerConsumos(usuario, mesInicial, mesFinal, regsDiarios);
     for (unsigned i=0; i<10; i++){
         for (unsigned j=0; j<24; j++){
