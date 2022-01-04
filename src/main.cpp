@@ -18,19 +18,28 @@
 \******************************************************************************/
 
 #include <iostream>
+#include <stdio.h>
 #include <fstream>
 #include <string>
-#include "gasto-diario.hpp"
 #include "fichs-electricos.hpp"
 #include "vector-gastos.hpp"
 #include "tarifas-comerciales.hpp"
 using namespace std;
 
-struct Usuario {
-    char nombre;
-    int mesInicial, mesFinal;
-    string ficheros[12];
-};
+void tarifaPVPCGeneral(const GastoDiario regDiarios[], const unsigned numRegs){
+    Fecha fechaBarata, fechaCara;
+    unsigned hora;
+    double precioMinimo, precioMaximo=0;
+
+    diaMasBarato( regDiarios, numRegs, fechaBarata, precioMinimo);
+    horaMasCara(regDiarios, numRegs, fechaCara, hora, precioMaximo);
+
+    string fechaBaratastr = to_string(fechaBarata.dia) + "-" + to_string(fechaBarata.mes) + "-" + to_string(fechaBarata.agno);
+    string fechaCarastr = to_string(fechaCara.dia) + "-" + to_string(fechaCara.mes) + "-" + to_string(fechaCara.agno);
+
+    cout << "El día completo más barato fue el " << fechaBaratastr << ". Precio medio: " << precioMinimo << " =C/kWh\n";
+    cout << "La hora más cara tuvo lugar el " << fechaCarastr << " a las " << hora <<":00. Precio: " << precioMaximo <<" =C/kWh\n";
+}
 
 /*
  * Pre:  «f» es «cout» o un flujo de la clase «ofstream» asociado con un fichero
@@ -43,10 +52,15 @@ struct Usuario {
  */
 void escribirInforme(ostream& f, const GastoDiario regDiarios[], const unsigned numRegs, const string nombreCliente, 
 const unsigned mesInicial, const unsigned mesFinal) {
-    string cabecera = "INFORME DEL CLIENTE " + nombreCliente + " ENTRE LOS MESES "+ to_string(mesInicial) + 
-    " Y " + to_string(mesFinal) + " DE 2021\n-------------------------------------\n";
+    string nombreClienteMayus = "";
+    for (auto c:nombreCliente){
+        nombreClienteMayus += (char)toupper(c);
+    }
+    string cabecera = "INFORME DEL CLIENTE " + nombreClienteMayus + " ENTRE LOS MESES "+ to_string(mesInicial) + 
+    " Y " + to_string(mesFinal) + " DE 2021\n----------------------------------------------------\n";
     f << cabecera;
 
+    tarifaPVPCGeneral(regDiarios, numRegs);
 
 }   
 
@@ -88,6 +102,7 @@ bool pedirDatos(string& usuario, unsigned& mesInicial, unsigned& mesFinal, strin
     }
     getline(cin, fichero);
     fichero = crtr + fichero;
+
     return true;
 }
 
@@ -108,9 +123,10 @@ int main() {
 
     unsigned numRegs = diasTranscurridos(fechaInicio, fechaFinal);
     GastoDiario regsDiarios[numRegs];
+    
     leerPrecios("datos/tarifas-2021-ene-nov.csv", mesInicial, mesFinal, regsDiarios);
     leerConsumos(usuario, mesInicial, mesFinal, regsDiarios);
-    
+
     if (nuevoArchivo){
         ofstream f(fichero);
         if (!f.is_open()){
@@ -118,6 +134,7 @@ int main() {
             return 1;
         }
         escribirInforme(f, regsDiarios, numRegs, usuario, mesInicial, mesFinal);
+        f.close();
     } else {
         escribirInforme(cout, regsDiarios, numRegs, usuario, mesInicial, mesFinal);
     }

@@ -54,8 +54,9 @@ bool leerConsumoHorario(istream& f,Fecha& fecha, unsigned& hora, double& consumo
 
 }
 
-bool leerPrecios(const string nombreFichero, const unsigned mesInicial, const unsigned mesFinal, GastoDiario registros[]) {
 
+bool leerPrecios(const string nombreFichero, const unsigned mesInicial, const unsigned mesFinal, GastoDiario registros[]) {
+    
     ifstream f(nombreFichero);
 
     if (!f.is_open()){
@@ -79,8 +80,8 @@ bool leerPrecios(const string nombreFichero, const unsigned mesInicial, const un
     registros[0].precios[0] = precio;
 
     int dia = 0;
-
-    while (leerPrecioHorario(f, fecha, hora, precio) && fecha.mes <= mesFinal && fecha.mes >= mesInicial){
+    unsigned mesesRepetidos[12] = {0};
+    while (leerPrecioHorario(f, fecha, hora, precio) && fecha.mes <= mesFinal && fecha.mes >= mesInicial && !mesesRepetidos[fecha.mes-1]){
         if (f.eof()){
             f.close();
             f.clear();
@@ -89,8 +90,10 @@ bool leerPrecios(const string nombreFichero, const unsigned mesInicial, const un
         }
         
         if (hora == 0){
+            unsigned mes = registros[dia].dia.mes;
             dia++;
             registros[dia].dia = fecha;
+            if (mes != fecha.mes) mesesRepetidos[mes-1] = 1;
         }
 
         registros[dia].precios[hora] = precio;

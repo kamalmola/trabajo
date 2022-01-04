@@ -16,12 +16,15 @@
  *       de precios horarios del registro «gasto» fue más cara.
  */
 unsigned horaMasCara(const GastoDiario& gasto){
-    unsigned horaCara;
-    for(unsigned i = 0;i<=NUM_HORAS-1;i++){
-        if(gasto.precios[i]<gasto.precios[i+1]){
-            horaCara = i+1;
+    unsigned horaCara = 0;
+    double precioMasCaro = gasto.precios[0];
+    for(unsigned i = 1;i<NUM_HORAS;i++){
+        if (gasto.precios[i] > precioMasCaro){
+            horaCara = i;
+            precioMasCaro = gasto.precios[i];
         }
     }
+    
     return horaCara;
 
 }
