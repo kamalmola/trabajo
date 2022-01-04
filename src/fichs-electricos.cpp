@@ -37,21 +37,26 @@ bool leerPrecioHorario(istream& f, Fecha& fecha, unsigned& hora, double& precio)
 }
 
 bool leerConsumoHorario(istream& f,Fecha& fecha, unsigned& hora, double& consumo){
-    string numFecha;
+    string ignorar;
 
-    getline(f,numFecha,';');
+    getline(f,ignorar,';');
     f >> fecha.dia;
-    getline(f,numFecha,'/');
+    f.ignore();
     f >> fecha.mes;
-    getline(f,numFecha,'/');
+    f.ignore();
     f >> fecha.agno;
+<<<<<<< HEAD
     getline(f,numFecha,';');
     f >> hora;
     getline(f,numFecha,';');
+=======
+    getline(f,ignorar,';');
+    f >> hora;
+    getline(f,ignorar,';');
+>>>>>>> d08ae64f3c0baf4280c7fd23ef6554f2fc77d3cc
     f >> consumo;
-    getline(f,numFecha);
-
-    return true;
+    getline(f, ignorar, ';');
+    return !f.eof();
 
 }
 
@@ -117,18 +122,13 @@ bool leerConsumos(const string nombreCliente, const unsigned mesInicial, const u
         double consumo;
 
         int dia = 0;
+        registros[0].consumos[0] = leerConsumoHorario(f, fecha, hora, consumo);
 
-        while (leerConsumoHorario(f, fecha, hora, consumo) && fecha.mes <= mesFinal){
-            if(fecha.dia != registros[dia].dia.dia){
-                cerr << "Fechas distintas entre mismos dias";
-                return false;
-            }
+        while (leerConsumoHorario(f, fecha, hora, consumo)){
             if (hora == 1){
                 dia++;
-                registros[dia].dia = fecha;
             }
-
-            registros[dia].precios[hora-1] = consumo;
+            registros[dia].consumos[hora-1] = consumo;
 
         }
     }
