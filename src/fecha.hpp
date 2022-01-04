@@ -30,5 +30,3 @@ void mostrar(ostream& f, const Fecha dia);
  */
 unsigned diasTranscurridos(const Fecha inicial, const Fecha final);
 
-
-unsigned diasDelMes(unsigned mes, unsigned agno);
