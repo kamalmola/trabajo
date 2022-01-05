@@ -103,6 +103,7 @@ bool leerPrecios(const string nombreFichero, const unsigned mesInicial, const un
 }
 bool leerConsumos(const string nombreCliente, const unsigned mesInicial, const unsigned mesFinal, GastoDiario registros[]) {
 
+    int dia = 0;
     for (unsigned i=mesInicial; i<=mesFinal; i++){
         string fichero = "datos/" + nombreCliente + "-2021-" + (i<10 ? "0"+to_string(i): to_string(i)) + ".csv";
         ifstream f(fichero);
@@ -117,11 +118,12 @@ bool leerConsumos(const string nombreCliente, const unsigned mesInicial, const u
         Fecha fecha;
         unsigned hora;
         double consumo;
-
-        int dia = 0;
-        leerConsumoHorario(f, fecha, hora, consumo);
-        registros[0].consumos[0] = consumo; 
-
+        
+        if (i == mesInicial){
+            leerConsumoHorario(f, fecha, hora, consumo);
+            registros[0].consumos[0] = consumo; 
+        }
+        
         while (leerConsumoHorario(f, fecha, hora, consumo)){
             dia += hora == 1; 
             registros[dia].consumos[hora-1] = consumo;
