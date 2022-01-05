@@ -10,11 +10,7 @@
 #include "gasto-diario.hpp"
 #include <fstream>
 
-/*
- * Pre:  ---
- * Post: Devuelve la hora en la que el precio de la electricidad según los datos
- *       de precios horarios del registro «gasto» fue más cara.
- */
+
 unsigned horaMasCara(const GastoDiario& gasto){
     unsigned horaCara = 0;
     double precioMasCaro = gasto.precios[0];
@@ -24,15 +20,9 @@ unsigned horaMasCara(const GastoDiario& gasto){
             precioMasCaro = gasto.precios[i];
         }
     }
-    
     return horaCara;
-
 }
-/*
- * Pre:  ---
- * Post: Devuelve el precio medio de la electricidad según los datos de precios
- *       horarios del registro «gasto».
- */
+
 double costeMedio(const GastoDiario& gasto){
     double acumuladorPrecios = 0;
 
@@ -42,41 +32,32 @@ double costeMedio(const GastoDiario& gasto){
 
     return acumuladorPrecios/NUM_HORAS;
 }
-/*
- * Pre:  ---
- * Post: Devuelve el importe en euros del coste de la energía eléctrica
- *       reflejados por los datos del registro «gasto».
- */
+
 double costeDiario(const GastoDiario& gasto){
-    double importe;
-    for(unsigned i = 0; i<=NUM_HORAS;i++){
-        importe += gasto.consumos[i] * gasto.precios[i];
+    double importe = 0.0;
+    for(unsigned i = 0; i<NUM_HORAS;i++){
+        //clog << "Hora " << i+1 << " Consumo: " << gasto.consumos[i] << " Precio: " << gasto.precios[i] << endl;
+        importe += (gasto.consumos[i] * gasto.precios[i]);
                 
     }
     return importe;
 }
-/*
- * Pre:  ---
- * Post: Devuelve el importe en euros del coste de la energía eléctrica
- *       reflejados por los datos del registro «gasto» suponiendo que todo el 
- *       consumo eléctrico reflejado en el registro «gasto» hubiera tenido lugar
- *       en la hora con el precio más barato del registro «gasto».
- */
+
 double costeDiarioMinimo(const GastoDiario& gasto){
-    double precioMin;
-    double consumoMin;
-    for(unsigned i = 0;i<=NUM_HORAS-1;i++){
-        if(gasto.precios[i]<gasto.precios[i+1]){
+    double precioMin = gasto.precios[0];
+    double coste = 0.0;
+    
+    for(unsigned i=1; i<NUM_HORAS; i++){
+        if(precioMin > gasto.precios[i]){
             precioMin = gasto.precios[i];
         }
-        if(gasto.consumos[i]<gasto.consumos[i+1]){
-            consumoMin = gasto.consumos[i];
-        }
-        
+    }
+    
+    for (unsigned i=0; i<NUM_HORAS; i++){
+        coste += (precioMin*gasto.consumos[i]);
     }
 
-
-    return precioMin * consumoMin;
+    return coste;
     
 }
 

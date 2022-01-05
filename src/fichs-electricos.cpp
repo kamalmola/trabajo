@@ -119,14 +119,12 @@ bool leerConsumos(const string nombreCliente, const unsigned mesInicial, const u
         double consumo;
 
         int dia = 0;
-        registros[0].consumos[0] = leerConsumoHorario(f, fecha, hora, consumo);
+        leerConsumoHorario(f, fecha, hora, consumo);
+        registros[0].consumos[0] = consumo; 
 
         while (leerConsumoHorario(f, fecha, hora, consumo)){
-            if (hora == 1){
-                dia++;
-            }
+            dia += hora == 1; 
             registros[dia].consumos[hora-1] = consumo;
-
         }
     }
     return true;

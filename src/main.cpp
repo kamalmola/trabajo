@@ -26,7 +26,7 @@
 #include "tarifas-comerciales.hpp"
 using namespace std;
 
-void tarifaPVPCGeneral(const GastoDiario regDiarios[], const unsigned numRegs){
+void tarifaPVPCGeneral(ostream& f, const GastoDiario regDiarios[], const unsigned numRegs){
     Fecha fechaBarata, fechaCara;
     unsigned hora;
     double precioMinimo, precioMaximo=0;
@@ -37,8 +37,19 @@ void tarifaPVPCGeneral(const GastoDiario regDiarios[], const unsigned numRegs){
     string fechaBaratastr = to_string(fechaBarata.dia) + "-" + to_string(fechaBarata.mes) + "-" + to_string(fechaBarata.agno);
     string fechaCarastr = to_string(fechaCara.dia) + "-" + to_string(fechaCara.mes) + "-" + to_string(fechaCara.agno);
 
-    cout << "El día completo más barato fue el " << fechaBaratastr << ". Precio medio: " << precioMinimo << " =C/kWh\n";
-    cout << "La hora más cara tuvo lugar el " << fechaCarastr << " a las " << hora <<":00. Precio: " << precioMaximo <<" =C/kWh\n";
+    f << "El día completo más barato fue el " << fechaBaratastr << ". Precio medio: " << precioMinimo << " €/kWh\n";
+    f << "La hora más cara tuvo lugar el " << fechaCarastr << " a las " << hora <<":00. Precio: " << precioMaximo <<" €/kWh\n\n";
+}
+
+void importeConPVPC(ostream& f, const GastoDiario regDiarios[], const unsigned numRegs){
+    double costeReal = costeTerminoVariable(regDiarios, numRegs);
+    double costeMinimo = costeMinimoPosible(regDiarios, numRegs);
+    double diferencia = 100 - costeMinimo / costeReal * 100;
+    
+    f << "El importe del consumo eléctrico en el periodo considerado ha sido de " << costeReal << " €.\n";
+    f << "El importe mínimo concentrando todo el consumo diario en la hora más barata habría sido de " 
+    << costeMinimo << " € (un " <<  diferencia << " % menor).";
+
 }
 
 /*
@@ -60,7 +71,8 @@ const unsigned mesInicial, const unsigned mesFinal) {
     " Y " + to_string(mesFinal) + " DE 2021\n----------------------------------------------------\n";
     f << cabecera;
 
-    tarifaPVPCGeneral(regDiarios, numRegs);
+    tarifaPVPCGeneral(f, regDiarios, numRegs);
+    importeConPVPC(f, regDiarios, numRegs);
 
 }   
 

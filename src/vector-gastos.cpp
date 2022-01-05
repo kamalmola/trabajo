@@ -40,19 +40,19 @@ void horaMasCara(const GastoDiario regsDiarios[], const unsigned numRegs, Fecha&
 
 double costeTerminoVariable(const GastoDiario regsDiarios[], const unsigned numRegs){
 
-    double acc = 0;
+    double acc = 0.0;
 
     for (unsigned i=0; i<numRegs; i++){
+        //clog << "Día " << i << "--------\n";
         acc += costeDiario(regsDiarios[i]);
     }
     return acc;
-
 }
 
 
 
 double costeMinimoPosible(const GastoDiario regsDiarios[], const unsigned numRegs){
-    double acc = 0;
+    double acc = 0.0;
 
     for (unsigned i=0; i<numRegs; i++){
         acc += costeDiarioMinimo(regsDiarios[i]);
