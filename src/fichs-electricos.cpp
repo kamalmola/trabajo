@@ -60,8 +60,9 @@ bool leerConsumoHorario(istream& f,Fecha& fecha, unsigned& hora, double& consumo
 
 }
 
-bool leerPrecios(const string nombreFichero, const unsigned mesInicial, const unsigned mesFinal, GastoDiario registros[]) {
 
+bool leerPrecios(const string nombreFichero, const unsigned mesInicial, const unsigned mesFinal, GastoDiario registros[]) {
+    
     ifstream f(nombreFichero);
 
     if (!f.is_open()){
@@ -85,8 +86,8 @@ bool leerPrecios(const string nombreFichero, const unsigned mesInicial, const un
     registros[0].precios[0] = precio;
 
     int dia = 0;
-
-    while (leerPrecioHorario(f, fecha, hora, precio) && fecha.mes <= mesFinal && fecha.mes >= mesInicial){
+    unsigned mesesRepetidos[12] = {0};
+    while (leerPrecioHorario(f, fecha, hora, precio) && fecha.mes <= mesFinal && fecha.mes >= mesInicial && !mesesRepetidos[fecha.mes-1]){
         if (f.eof()){
             f.close();
             f.clear();
@@ -95,8 +96,10 @@ bool leerPrecios(const string nombreFichero, const unsigned mesInicial, const un
         }
         
         if (hora == 0){
+            unsigned mes = registros[dia].dia.mes;
             dia++;
             registros[dia].dia = fecha;
+            if (mes != fecha.mes) mesesRepetidos[mes-1] = 1;
         }
 
         registros[dia].precios[hora] = precio;
@@ -106,6 +109,7 @@ bool leerPrecios(const string nombreFichero, const unsigned mesInicial, const un
 }
 bool leerConsumos(const string nombreCliente, const unsigned mesInicial, const unsigned mesFinal, GastoDiario registros[]) {
 
+    int dia = 0;
     for (unsigned i=mesInicial; i<=mesFinal; i++){
         string fichero = "datos/" + nombreCliente + "-2021-" + (i<10 ? "0"+to_string(i): to_string(i)) + ".csv";
         ifstream f(fichero);
@@ -120,16 +124,15 @@ bool leerConsumos(const string nombreCliente, const unsigned mesInicial, const u
         Fecha fecha;
         unsigned hora;
         double consumo;
-
-        int dia = 0;
-        registros[0].consumos[0] = leerConsumoHorario(f, fecha, hora, consumo);
-
+        
+        if (i == mesInicial){
+            leerConsumoHorario(f, fecha, hora, consumo);
+            registros[0].consumos[0] = consumo; 
+        }
+        
         while (leerConsumoHorario(f, fecha, hora, consumo)){
-            if (hora == 1){
-                dia++;
-            }
+            dia += hora == 1; 
             registros[dia].consumos[hora-1] = consumo;
-
         }
     }
     return true;
