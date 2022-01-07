@@ -18,6 +18,7 @@
 \******************************************************************************/
 
 #include <iostream>
+#include <iomanip>
 #include <stdio.h>
 #include <fstream>
 #include <string>
@@ -48,8 +49,27 @@ void importeConPVPC(ostream& f, const GastoDiario regDiarios[], const unsigned n
     
     f << "El importe del consumo eléctrico en el periodo considerado ha sido de " << costeReal << " €.\n";
     f << "El importe mínimo concentrando todo el consumo diario en la hora más barata habría sido de " 
-    << costeMinimo << " € (un " <<  diferencia << " % menor).";
+    << costeMinimo << " € (un " <<  diferencia << " % menor).\n\n";
 
+}
+
+void mercadoLibre(ostream& f, const GastoDiario regDiarios[], const unsigned numRegs){
+    string espacio = "         ";
+    string cabecera = "COSTE CON TARIFAS COMERCIALES \nCoste" + espacio + "Nombre de la tarifa" 
+    "\n----------------------------------------------------\n";
+    f << cabecera;
+    TarifaPlanaTramos tarifa;
+    string espacio2 = "   ";
+    for(int i = 0;i<NUM_TARIFAS_COMERCIALES;i++){
+
+        tarifa.llano = TARIFAS_COMERCIALES[i].llano;
+        tarifa.punta = TARIFAS_COMERCIALES[i].punta;
+        tarifa.valle = TARIFAS_COMERCIALES[i].valle;
+
+        string disposicion = " €" + espacio2 + TARIFAS_COMERCIALES[i].nombre + "\n";
+        f << setprecision(5) << costeTarifaPlanaTramos(regDiarios,numRegs,tarifa) << disposicion;
+    }
+    
 }
 
 /*
@@ -73,6 +93,7 @@ const unsigned mesInicial, const unsigned mesFinal) {
 
     tarifaPVPCGeneral(f, regDiarios, numRegs);
     importeConPVPC(f, regDiarios, numRegs);
+    mercadoLibre(f,regDiarios,numRegs);
 
 }   
 
@@ -138,22 +159,6 @@ int main() {
     
     leerPrecios("datos/tarifas-2021-ene-nov.csv", mesInicial, mesFinal, regsDiarios);
     leerConsumos(usuario, mesInicial, mesFinal, regsDiarios);
-<<<<<<< HEAD
-<<<<<<< HEAD
-    for (unsigned i=0; i<10; i++){
-        for (unsigned j=0; j<24; j++){
-            cout << regsDiarios[i].consumos[j] << endl;
-        }
-    } 
-    
-
-     
-=======
-    
->>>>>>> d08ae64f3c0baf4280c7fd23ef6554f2fc77d3cc
-=======
-
->>>>>>> d6c9daa56ee438e92a826efe3cb0abb60ab17297
     if (nuevoArchivo){
         ofstream f(fichero);
         if (!f.is_open()){
