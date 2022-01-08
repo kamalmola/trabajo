@@ -55,19 +55,13 @@ void importeConPVPC(ostream& f, const GastoDiario regDiarios[], const unsigned n
 
 void mercadoLibre(ostream& f, const GastoDiario regDiarios[], const unsigned numRegs){
     string espacio = "         ";
-    string cabecera = "COSTE CON TARIFAS COMERCIALES \nCoste" + espacio + "Nombre de la tarifa" 
+    string cabecera = "COSTE CON TARIFAS COMERCIALES \nCoste" + espacio + "Nombre de la tarifa" +
     "\n----------------------------------------------------\n";
     f << cabecera;
-    TarifaPlanaTramos tarifa;
     string espacio2 = "   ";
     for(int i = 0;i<NUM_TARIFAS_COMERCIALES;i++){
-
-        tarifa.llano = TARIFAS_COMERCIALES[i].llano;
-        tarifa.punta = TARIFAS_COMERCIALES[i].punta;
-        tarifa.valle = TARIFAS_COMERCIALES[i].valle;
-
         string disposicion = " €" + espacio2 + TARIFAS_COMERCIALES[i].nombre + "\n";
-        f << setprecision(5) << costeTarifaPlanaTramos(regDiarios,numRegs,tarifa) << disposicion;
+        f << fixed << setprecision(2) <<  costeTarifaPlanaTramos(regDiarios,numRegs,TARIFAS_COMERCIALES[i]) << disposicion;
     }
     
 }
